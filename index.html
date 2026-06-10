@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SYNC — Beta Feedback</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d1c;
+      --surface: #13132a;
+      --surface2: #1a1a35;
+      --border: rgba(127, 119, 221, 0.2);
+      --border-active: rgba(127, 119, 221, 0.6);
+      --purple: #7F77DD;
+      --teal: #1D9E75;
+      --teal-light: #5DCAA5;
+      --text: #f0f0f8;
+      --text-muted: #8888aa;
+      --text-faint: #555577;
+      --pill-bg: rgba(127, 119, 221, 0.12);
+      --pill-active-bg: rgba(127, 119, 221, 0.25);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .top-bar {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+    }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
+    .brand span {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      color: var(--purple);
+      display: block;
+      margin-top: -2px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 1rem;
+    }
+
+    .card-header {
+      margin-bottom: 1.75rem;
+    }
+
+    .card-header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .card-header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-family: Arial, sans-serif;
+    }
+
+    .section-label {
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin: 1.75rem 0 1rem;
+      padding-bottom: 8px;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .section-label:first-child { margin-top: 0; }
+
+    .field { margin-bottom: 1.25rem; }
+
+    .field label {
+      display: block;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .field label .opt {
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s;
+      appearance: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--purple);
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--text-faint); }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238888aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    select option { background: #1a1a35; }
+
+    textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+    .star-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .star-btn {
+      background: var(--surface2);
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      width: 44px;
+      height: 44px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-faint);
+    }
+
+    .star-btn.active {
+      background: rgba(127, 119, 221, 0.2);
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+
+    .pill-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      background: var(--pill-bg);
+      border: 0.5px solid var(--border);
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .pill.active {
+      background: var(--pill-active-bg);
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+
+    .nps-wrap {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nps-btn {
+      background: var(--surface2);
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      width: 48px;
+      height: 48px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .nps-btn.active {
+      background: rgba(127, 119, 221, 0.2);
+      border-color: var(--purple);
+      color: var(--purple);
+      font-weight: 600;
+    }
+
+    .nps-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: var(--text-faint);
+    }
+
+    .gradient-line {
+      height: 2px;
+      background: linear-gradient(90deg, var(--purple), var(--teal-light), var(--teal));
+      border-radius: 999px;
+      margin: 2rem 0;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--purple);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: opacity 0.15s;
+      margin-top: 0.5rem;
+    }
+
+    .submit-btn:hover { opacity: 0.88; }
+    .submit-btn:active { transform: scale(0.99); }
+
+    .success-card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      display: none;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .success-card h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .success-card p {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 2rem;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: var(--text-faint);
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 1.5rem 1.25rem; }
+      .nps-btn { width: 40px; height: 40px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <svg class="logo-mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 4 24 A 18 18 0 0 1 36 24" stroke="#7F77DD" stroke-width="2" stroke-linecap="round" opacity="0.25"/>
+      <path d="M 7 24 A 14 14 0 0 1 33 24" stroke="#7F77DD" stroke-width="2" stroke-linecap="round" opacity="0.45"/>
+      <path d="M 11 24 A 10 10 0 0 1 29 24" stroke="#7F77DD" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+      <path d="M 15 24 A 6 6 0 0 1 25 24" stroke="#7F77DD" stroke-width="3" stroke-linecap="round" opacity="0.95"/>
+      <circle cx="20" cy="24" r="4" fill="#7F77DD"/>
+      <circle cx="20" cy="24" r="1.8" fill="#1D9E75"/>
+    </svg>
+    <div class="brand">
+      SYNC
+      <span>PARTICIPATE · REACT · CONNECT</span>
+    </div>
+  </div>
+
+  <div class="card" id="form-card">
+    <div class="card-header">
+      <h1>Beta feedback</h1>
+      <p>You're one of the first people to try SYNC. Your honest feedback shapes what we build next. Takes about 3 minutes.</p>
+    </div>
+
+    <div class="section-label">About you</div>
+
+    <div class="field">
+      <label>Name <span class="opt">(optional)</span></label>
+      <input type="text" id="f-name" placeholder="Your name" />
+    </div>
+
+    <div class="field">
+      <label>How often do you use social media?</label>
+      <select id="f-freq">
+        <option value="">Select one</option>
+        <option>Multiple times a day</option>
+        <option>Once a day</option>
+        <option>A few times a week</option>
+        <option>Rarely</option>
+      </select>
+    </div>
+
+    <div class="section-label">First impressions</div>
+
+    <div class="field">
+      <label>Overall rating</label>
+      <div class="star-row" id="stars">
+        <button class="star-btn" onclick="setStar(1)">★</button>
+        <button class="star-btn" onclick="setStar(2)">★</button>
+        <button class="star-btn" onclick="setStar(3)">★</button>
+        <button class="star-btn" onclick="setStar(4)">★</button>
+        <button class="star-btn" onclick="setStar(5)">★</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>How easy was it to get started?</label>
+      <select id="f-onboard">
+        <option value="">Select one</option>
+        <option>Very easy</option>
+        <option>Easy</option>
+        <option>Neutral</option>
+        <option>Difficult</option>
+        <option>Very difficult</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>What did you try? <span class="opt">(select all that apply)</span></label>
+      <div class="pill-wrap" id="features">
+        <div class="pill" onclick="togglePill(this)">Feed</div>
+        <div class="pill" onclick="togglePill(this)">Voting on a card</div>
+        <div class="pill" onclick="togglePill(this)">Creating a card</div>
+        <div class="pill" onclick="togglePill(this)">Live room</div>
+        <div class="pill" onclick="togglePill(this)">Voice reactions</div>
+        <div class="pill" onclick="togglePill(this)">Discover</div>
+        <div class="pill" onclick="togglePill(this)">Reputation</div>
+        <div class="pill" onclick="togglePill(this)">Notifications</div>
+        <div class="pill" onclick="togglePill(this)">Profile</div>
+      </div>
+    </div>
+
+    <div class="section-label">Your experience</div>
+
+    <div class="field">
+      <label>What did you like most?</label>
+      <textarea id="f-liked" placeholder="Tell us what stood out..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>What needs improvement?</label>
+      <textarea id="f-improve" placeholder="Bugs, confusing parts, missing features..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Did you encounter any bugs?</label>
+      <select id="f-bugs">
+        <option value="">Select one</option>
+        <option>No bugs at all</option>
+        <option>Minor bugs but usable</option>
+        <option>Some bugs that affected my experience</option>
+        <option>Major bugs, hard to use</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Describe the bug <span class="opt">(optional)</span></label>
+      <textarea id="f-bugdesc" placeholder="What happened and where..." style="min-height: 60px;"></textarea>
+    </div>
+
+    <div class="section-label">Would you recommend SYNC?</div>
+
+    <div class="field">
+      <label>How likely are you to recommend SYNC to a friend?</label>
+      <div class="nps-wrap" id="nps">
+        <button class="nps-btn" onclick="setNps(0)">0</button>
+        <button class="nps-btn" onclick="setNps(1)">1</button>
+        <button class="nps-btn" onclick="setNps(2)">2</button>
+        <button class="nps-btn" onclick="setNps(3)">3</button>
+        <button class="nps-btn" onclick="setNps(4)">4</button>
+        <button class="nps-btn" onclick="setNps(5)">5</button>
+        <button class="nps-btn" onclick="setNps(6)">6</button>
+        <button class="nps-btn" onclick="setNps(7)">7</button>
+        <button class="nps-btn" onclick="setNps(8)">8</button>
+        <button class="nps-btn" onclick="setNps(9)">9</button>
+        <button class="nps-btn" onclick="setNps(10)">10</button>
+      </div>
+      <div class="nps-labels"><span>Not likely</span><span>Very likely</span></div>
+    </div>
+
+    <div class="field">
+      <label>Anything else for the SYNC team? <span class="opt">(optional)</span></label>
+      <textarea id="f-other" placeholder="Feature requests, general thoughts..."></textarea>
+    </div>
+
+    <div class="gradient-line"></div>
+
+    <button class="submit-btn" onclick="submitForm()">Submit feedback</button>
+  </div>
+
+  <div class="success-card" id="success-card">
+    <svg class="success-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="30" stroke="#1D9E75" stroke-width="2" opacity="0.3"/>
+      <circle cx="32" cy="32" r="22" stroke="#1D9E75" stroke-width="2" opacity="0.6"/>
+      <circle cx="32" cy="32" r="14" fill="#1D9E75" opacity="0.15"/>
+      <path d="M22 32l7 7 13-13" stroke="#1D9E75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h2>Thank you!</h2>
+    <p>Your feedback has been recorded.<br/>It helps us build a better SYNC for everyone.</p>
+  </div>
+
+  <div class="footer">SYNC Beta · Confidential · 2026</div>
+
+  <script>
+    let starVal = 0, npsVal = -1;
+
+    function setStar(n) {
+      starVal = n;
+      document.querySelectorAll('.star-btn').forEach((b, i) => {
+        b.classList.toggle('active', i < n);
+      });
+    }
+
+    function setNps(n) {
+      npsVal = n;
+      document.querySelectorAll('.nps-btn').forEach((b, i) => {
+        b.classList.toggle('active', i === n);
+      });
+    }
+
+    function togglePill(el) {
+      el.classList.toggle('active');
+    }
+
+    function submitForm() {
+      const features = [...document.querySelectorAll('#features .pill.active')].map(p => p.textContent);
+      const data = {
+        name: document.getElementById('f-name').value || 'Anonymous',
+        socialFreq: document.getElementById('f-freq').value,
+        rating: starVal,
+        onboarding: document.getElementById('f-onboard').value,
+        features,
+        liked: document.getElementById('f-liked').value,
+        improve: document.getElementById('f-improve').value,
+        bugs: document.getElementById('f-bugs').value,
+        bugDesc: document.getElementById('f-bugdesc').value,
+        nps: npsVal >= 0 ? npsVal : 'Not answered',
+        other: document.getElementById('f-other').value,
+        submittedAt: new Date().toLocaleString()
+      };
+
+      console.log('SYNC Beta Feedback:', JSON.stringify(data, null, 2));
+
+      document.getElementById('form-card').style.display = 'none';
+      document.getElementById('success-card').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
